@@ -52,7 +52,7 @@ ENV PHPIZE_DEPS \
         libmcrypt-dev
 
 #使用本地PHP配置
-ADD conf/php.ini $PHP_INI_DIR/php.ini
+ADD ./conf/php.ini $PHP_INI_DIR/php.ini
 RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php7/php-fpm.conf \
     && sed -i -e "s/listen\s*=\s*127.0.0.1:9000/listen = 9000/g" /etc/php7/php-fpm.d/www.conf
 
@@ -61,7 +61,7 @@ RUN rm -rf /var/cache/apk/* \
     && echo "done"
 
 #运行设置home 目录 www-data 权限
-ADD script/run.sh /
+ADD ./script/run.sh /
 RUN chmod +x /run.sh
 RUN sh /run.sh && rm /run.sh
 
@@ -69,8 +69,6 @@ WORKDIR /home
 
 #http,websocket
 EXPOSE 9000
-
-STOPSIGNAL SIGTERM
 
 ENTRYPOINT ["docker-php-entrypoint"]
 
