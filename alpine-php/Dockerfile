@@ -21,10 +21,9 @@ RUN set -xe \
     musl \
     yaml \
     # https://github.com/docker-library/php/issues/494
-    libressl \
+    #libressl \
     php7 php7-fpm php7-gd php7-common php7-apcu php7-bcmath php7-ctype php7-curl php7-dom php7-iconv php7-intl php7-json php7-openssl \
-    php7-opcache php7-mbstring php7-memcached php7-mysqlnd php7-mysqli php7-pcntl php7-pgsql php7-pdo_mysql php7-pdo_pgsql php7-pdo_sqlite \
-    php7-phar php7-posix php7-session php7-soap php7-sockets php7-sodium php7-xml php7-xmlreader php7-zip php7-zlib php7-redis php7-pear php7-fileinfo \
+    php7-opcache php7-mbstring php7-memcached php7-mysqlnd php7-mysqli php7-pcntl php7-pgsql php7-pdo_mysql php7-pdo_pgsql php7-pdo_sqlite php7-phar php7-posix php7-session php7-soap php7-sockets php7-sodium php7-xml php7-xmlreader php7-zip php7-zlib php7-redis php7-pear php7-fileinfo \
     # 安装 Composer，PHP 用来管理依赖关系的工具
     && curl -sS https://getcomposer.org/installer \
         | php7 -- --install-dir=/usr/bin --filename=composer \
@@ -50,6 +49,18 @@ ENV PHPIZE_DEPS \
         make \
         libc-dev \
         libmcrypt-dev
+
+RUN set -xe \
+    && apk add --no-cache --repository "http://mirrors.aliyun.com/alpine/edge/testing" \
+    --virtual  \
+    $PHPIZE_DEPS
+
+#add lrzsz
+RUN wget https://ohse.de/uwe/releases/lrzsz-0.12.20.tar.gz
+RUN tar -xf lrzsz-0.12.20.tar.gz
+RUN cd lrzsz-0.12.20 && ./configure \
+    && make && make install
+RUN ln -s /usr/local/bin/lrz /usr/local/bin/rz && ln -s /usr/local/bin/lsz /usr/local/bin/sz
 
 #使用本地PHP配置
 ADD ./conf/php.ini $PHP_INI_DIR/php.ini
