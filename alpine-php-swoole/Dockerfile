@@ -40,13 +40,18 @@ ENV PHPIZE_DEPS \
         yaml-dev libevent-dev openssl-dev \
         hiredis-dev linux-headers zlib-dev gmp-dev pcre-dev icu-dev
 
+RUN set -xe \
+    && apk add --virtual .phpize-deps $PHPIZE_DEPS
+
+#安装php7-wxwork-finance-sdk
+#ADD extend/php7-wxwork-finance-sdk /home/php7-wxwork-finance-sdk
+#ADD script/wxwork.sh /
+#RUN chmod +x /wxwork.sh && /bin/sh /wxwork.sh
+
 #安装swoole扩展
 ENV PHP_EXT_SWOOLE=swoole-4.6.2
 
-RUN set -xe \
-    && apk add --virtual .phpize-deps \
-        $PHPIZE_DEPS \
-    && pecl update-channels pecl.php.net \
+RUN pecl update-channels pecl.php.net \
     && cd /tmp \
     && mkdir -p /tmp/$PHP_EXT_SWOOLE \
     && wget -O ${PHP_EXT_SWOOLE}.tgz https://github.com/swoole/swoole-src/archive/v4.6.2.tar.gz \
@@ -58,6 +63,7 @@ RUN set -xe \
     && make install \
     && rm -rf /tmp/${PHP_EXT_SWOOLE}* \
     && apk del .phpize-deps
+
 
 #使用本地PHP配置
 ADD conf/cacert.pem $PHP_INI_DIR/cacert.pem
