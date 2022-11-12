@@ -65,7 +65,7 @@ RUN cd lrzsz-0.12.20 && ./configure \
 RUN ln -s /usr/local/bin/lrz /usr/local/bin/rz && ln -s /usr/local/bin/lsz /usr/local/bin/sz
 
 #使用本地PHP配置
-ADD ./conf/conf/cacert.pem /etc/php/cacert.pem
+ADD ./conf/cacert.pem /etc/php/cacert.pem
 ADD ./conf/php.ini $PHP_INI_DIR/php.ini
 RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php7/php-fpm.conf \
     && sed -i -e "s/listen\s*=\s*127.0.0.1:9000/listen = 9000/g" /etc/php7/php-fpm.d/www.conf
